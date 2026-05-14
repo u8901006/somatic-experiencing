@@ -1,0 +1,90 @@
+name: SE Research Daily Report
+
+on:
+  schedule:
+    - cron: "45 5 * * *" # UTC 05:45 = GMT+8 13:45
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Target date (YYYY-MM-DD), leave empty for today"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install --omit=dev
+
+      - name: Determine date
+        id: date
+        run: |
+          INPUT_DATE="${{ github.event.inputs.date }}"
+          if [ -n "$INPUT_DATE" ] && echo "$INPUT_DATE" | grep -qE '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'; then
+            echo "target=$INPUT_DATE" >> "$GITHUB_OUTPUT"
+          else
+            TARGET=$(TZ=Asia/Taipei date +%Y-%m-%d)
+            echo "target=$TARGET" >> "$GITHUB_OUTPUT"
+          fi
+          echo "Date: $(cat "$GITHUB_OUTPUT" | grep target | cut -d= -f2)"
+
+      - name: Fetch papers from PubMed
+        run: node scripts/fetch_papers.mjs --days 7 --max-papers 40 --output papers.json
+        env:
+          TARGET_DATE: ${{ steps.date.outputs.target }}
+        continue-on-error: true
+
+      - name: Check papers data
+        id: papers
+        run: |
+          if [ -f papers.json ] && grep -q '"count"' papers.json; then
+            COUNT=$(node -e "const d=require('./papers.json'); console.log(d.count || 0)")
+            echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+            echo "Papers found: $COUNT"
+          else
+            echo "count=0" >> "$GITHUB_OUTPUT"
+            echo '{"date":"${{ steps.date.outputs.target }}","count":0,"papers":[]}' > papers.json
+            echo "No papers found"
+          fi
+
+      - name: Generate report with GLM AI
+        run: node scripts/generate_report.mjs --input papers.json --output "docs/se-${{ steps.date.outputs.target }}.html"
+        env:
+          ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
+          TARGET_DATE: ${{ steps.date.outputs.target }}
+
+      - name: Generate index page
+        run: node scripts/generate_index.mjs
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/
+          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          git commit -m "📄 SE research daily report: ${{ steps.date.outputs.target }}"
+          git pull --rebase origin main
+          git push
+
+      - name: Summary
+        run: |
+          echo "### 📄 Somatic Experiencing Research Daily Report" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Date:** ${{ steps.date.outputs.target }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Papers analyzed:** ${{ steps.papers.outputs.count }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Report:** [se-${{ steps.date.outputs.target }}.html](https://u8901006.github.io/somatic-experiencing/se-${{ steps.date.outputs.target }}.html)" >> "$GITHUB_STEP_SUMMARY"
