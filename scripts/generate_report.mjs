@@ -1,9 +1,9 @@
 import { writeFileSync, readFileSync, mkdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 
-const API_BASE = 'https://open.bigmodel.cn/api/coding/paas/v4';
-const MODEL_FALLBACK_CHAIN = ['glm-5-turbo', 'glm-4.7', 'glm-4.7-flash'];
-const MAX_TOKENS = 50000;
+const API_BASE = process.env.NVIDIA_API_BASE || 'https://integrate.api.nvidia.com/v1';
+const MODEL_FALLBACK_CHAIN = ['nvidia/nemotron-3-super-120b-a12b', 'nvidia/nemotron-3-nano-30b-a3b'];
+const MAX_TOKENS = 16384;
 const TIMEOUT_MS = 480000;
 
 const SYSTEM_PROMPT = `你是身體經驗創傷治療（Somatic Experiencing）與身體心理治療領域的資深研究員與科學傳播者。你的任務是：
@@ -128,7 +128,7 @@ ${papersText}
 記住：回傳純 JSON，不要用 \`\`\`json\`\`\` 包裹。`;
 }
 
-async function callGLM(apiKey, model, prompt) {
+async function callNvidia(apiKey, model, prompt) {
   const resp = await fetch(`${API_BASE}/chat/completions`, {
     method: 'POST',
     headers: {
@@ -141,9 +141,10 @@ async function callGLM(apiKey, model, prompt) {
         { role: 'system', content: SYSTEM_PROMPT },
         { role: 'user', content: prompt },
       ],
-      temperature: 0.3,
-      top_p: 0.9,
+      temperature: 1.0,
+      top_p: 0.95,
       max_tokens: MAX_TOKENS,
+      chat_template_kwargs: { enable_thinking: false },
     }),
     signal: AbortSignal.timeout(TIMEOUT_MS),
   });
@@ -169,7 +170,7 @@ async function analyzePapers(apiKey, papersData) {
     for (let attempt = 1; attempt <= 3; attempt++) {
       try {
         console.error(`[INFO] Trying ${model} (attempt ${attempt})...`);
-        const text = await callGLM(apiKey, model, prompt);
+        const text = await callNvidia(apiKey, model, prompt);
         if (!text) { console.error(`[WARN] Empty response from ${model}`); continue; }
 
         const result = robustJsonParse(text);
@@ -361,7 +362,7 @@ function generateHtml(analysis) {
       <div class="header-meta">
         <span class="badge badge-date">📅 ${dateDisplay}</span>
         <span class="badge badge-count">📊 ${totalCount} 篇文獻</span>
-        <span class="badge badge-source">Powered by PubMed + Zhipu AI</span>
+        <span class="badge badge-source">Powered by PubMed + NVIDIA Nemotron</span>
       </div>
     </div>
   </header>
@@ -410,16 +411,12 @@ async function main() {
     process.exit(1);
   }
 
-  const apiKey = process.env.ZHIPU_API_KEY || '';
-  if (!apiKey) {
-    console.error('[ERROR] ZHIPU_API_KEY environment variable is required');
-    process.exit(1);
-  }
-
+  const apiKey = process.env.NVIDIA_API_KEY || '';
   const papersData = loadPapers(opts.input);
   let analysis;
 
-  if (!papersData?.papers?.length) {
+  const paperCount = Number(papersData?.count ?? papersData?.papers?.length ?? 0);
+  if (paperCount === 0 || !papersData?.papers?.length) {
     console.error('[WARN] No papers found, generating empty report');
     const dateStr = process.env.TARGET_DATE || new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Taipei' });
     analysis = {
@@ -431,6 +428,10 @@ async function main() {
       topic_distribution: {},
     };
   } else {
+    if (!apiKey) {
+      console.error('[ERROR] Missing NVIDIA_API_KEY repository secret');
+      process.exit(1);
+    }
     analysis = await analyzePapers(apiKey, papersData);
     if (!analysis) {
       console.error('[ERROR] Analysis failed, cannot generate report');
