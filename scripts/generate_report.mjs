@@ -1,10 +1,11 @@
 import { writeFileSync, readFileSync, mkdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 
-const API_BASE = 'https://open.bigmodel.cn/api/coding/paas/v4';
-const MODEL_FALLBACK_CHAIN = ['glm-5-turbo', 'glm-4.7', 'glm-4.7-flash'];
-const MAX_TOKENS = 50000;
+const API_BASE = (process.env.NVIDIA_API_BASE || 'https://integrate.api.nvidia.com/v1').replace(/\/+$/, '');
+const MODEL_FALLBACK_CHAIN = ['nvidia/nemotron-3-super-120b-a12b', 'nvidia/nemotron-3-nano-30b-a3b'];
+const MAX_TOKENS = 16384;
 const TIMEOUT_MS = 480000;
+const MAX_ATTEMPTS = 3;
 
 const SYSTEM_PROMPT = `你是身體經驗創傷治療（Somatic Experiencing）與身體心理治療領域的資深研究員與科學傳播者。你的任務是：
 1. 從提供的醫學文獻中，篩選出最具臨床意義與研究價值的論文
@@ -128,7 +129,11 @@ ${papersText}
 記住：回傳純 JSON，不要用 \`\`\`json\`\`\` 包裹。`;
 }
 
-async function callGLM(apiKey, model, prompt) {
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function callModel(apiKey, model, prompt) {
   const resp = await fetch(`${API_BASE}/chat/completions`, {
     method: 'POST',
     headers: {
@@ -141,54 +146,88 @@ async function callGLM(apiKey, model, prompt) {
         { role: 'system', content: SYSTEM_PROMPT },
         { role: 'user', content: prompt },
       ],
-      temperature: 0.3,
-      top_p: 0.9,
+      temperature: 1.0,
+      top_p: 0.95,
       max_tokens: MAX_TOKENS,
+      chat_template_kwargs: { enable_thinking: false },
     }),
     signal: AbortSignal.timeout(TIMEOUT_MS),
   });
 
+  const bodyText = await resp.text().catch(() => '');
+
   if (resp.status === 429) {
-    const retryAfter = parseInt(resp.headers.get('retry-after') || '60', 10);
-    throw new Error(`RATE_LIMIT:${retryAfter}`);
+    const retryAfter = parseInt(resp.headers.get('retry-after') || '', 10);
+    throw new Error(`RATE_LIMIT:${Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter : 60}`);
+  }
+
+  if (resp.status === 401 || resp.status === 403) {
+    throw new Error(`AUTH_FAILED:${resp.status}:${bodyText.slice(0, 200)}`);
   }
 
   if (!resp.ok) {
-    const body = await resp.text().catch(() => '');
-    throw new Error(`HTTP_${resp.status}:${body.slice(0, 200)}`);
+    throw new Error(`HTTP_${resp.status}:${bodyText.slice(0, 200)}`);
   }
 
-  const data = await resp.json();
+  let data;
+  try {
+    data = JSON.parse(bodyText);
+  } catch {
+    throw new Error('INVALID_JSON_RESPONSE');
+  }
   return data.choices?.[0]?.message?.content?.trim() || '';
+}
+
+function isNetworkError(e) {
+  return e.name === 'TimeoutError'
+    || e.name === 'AbortError'
+    || e.name === 'TypeError'
+    || /ETIMEDOUT|ENOTFOUND|ECONNRESET|ECONNREFUSED|fetch failed|network/i.test(e.message);
 }
 
 async function analyzePapers(apiKey, papersData) {
   const prompt = buildPrompt(papersData);
 
   for (const model of MODEL_FALLBACK_CHAIN) {
-    for (let attempt = 1; attempt <= 3; attempt++) {
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
       try {
-        console.error(`[INFO] Trying ${model} (attempt ${attempt})...`);
-        const text = await callGLM(apiKey, model, prompt);
-        if (!text) { console.error(`[WARN] Empty response from ${model}`); continue; }
+        console.error(`[INFO] Trying ${model} (attempt ${attempt}/${MAX_ATTEMPTS})...`);
+        const text = await callModel(apiKey, model, prompt);
+        if (!text) {
+          console.error(`[WARN] Empty response from ${model} (attempt ${attempt}), retrying...`);
+          await delay(Math.min(15 * attempt, 60) * 1000);
+          continue;
+        }
 
         const result = robustJsonParse(text);
         if (result) {
           console.error(`[INFO] ${model} success: ${result.top_picks?.length || 0} top picks, ${result.all_papers?.length || 0} total`);
           return result;
         }
-        console.error(`[WARN] JSON parse failed on attempt ${attempt}`);
-        if (attempt < 3) await new Promise(r => setTimeout(r, 5000));
+        console.error(`[WARN] JSON parse failed on attempt ${attempt}/${MAX_ATTEMPTS}, retrying...`);
+        await delay(Math.min(15 * attempt, 60) * 1000);
       } catch (e) {
         if (e.message.startsWith('RATE_LIMIT:')) {
-          const wait = parseInt(e.message.split(':')[1], 10) * attempt;
-          console.error(`[WARN] Rate limited, waiting ${wait}s...`);
-          await new Promise(r => setTimeout(r, wait * 1000));
+          const base = parseInt(e.message.split(':')[1], 10);
+          const wait = Math.min(base * attempt, 180);
+          console.error(`[WARN] Rate limited (429), waiting ${wait}s...`);
+          await delay(wait * 1000);
           continue;
         }
-        console.error(`[ERROR] ${model} attempt ${attempt}: ${e.message}`);
-        if (attempt >= 3) break;
-        await new Promise(r => setTimeout(r, 5000));
+        if (e.message.startsWith('AUTH_FAILED:')) {
+          console.error(`[ERROR] Authentication failed: ${e.message}. Check that the NVIDIA_API_KEY repository secret is valid.`);
+          return null;
+        }
+        if (e.message.startsWith('HTTP_4')) {
+          console.error(`[ERROR] ${model}: ${e.message}`);
+          break;
+        }
+        if (isNetworkError(e)) {
+          console.error(`[WARN] Network/timeout error on attempt ${attempt}: ${e.message}`);
+        } else {
+          console.error(`[ERROR] ${model} attempt ${attempt}: ${e.message}`);
+        }
+        await delay(Math.min(15 * attempt, 60) * 1000);
       }
     }
   }
@@ -361,7 +400,7 @@ function generateHtml(analysis) {
       <div class="header-meta">
         <span class="badge badge-date">📅 ${dateDisplay}</span>
         <span class="badge badge-count">📊 ${totalCount} 篇文獻</span>
-        <span class="badge badge-source">Powered by PubMed + Zhipu AI</span>
+        <span class="badge badge-source">Powered by PubMed + NVIDIA Nemotron</span>
       </div>
     </div>
   </header>
@@ -410,9 +449,9 @@ async function main() {
     process.exit(1);
   }
 
-  const apiKey = process.env.ZHIPU_API_KEY || '';
+  const apiKey = process.env.NVIDIA_API_KEY || '';
   if (!apiKey) {
-    console.error('[ERROR] ZHIPU_API_KEY environment variable is required');
+    console.error('[ERROR] NVIDIA_API_KEY environment variable is required');
     process.exit(1);
   }
 
