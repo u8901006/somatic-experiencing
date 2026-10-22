@@ -2,7 +2,7 @@ import { writeFileSync, readFileSync, mkdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 
 const API_BASE = (process.env.NVIDIA_API_BASE || 'https://integrate.api.nvidia.com/v1').replace(/\/+$/, '');
-const MODEL_FALLBACK_CHAIN = ['nvidia/nemotron-3-super-120b-a12b', 'nvidia/nemotron-3-nano-30b-a3b'];
+const MODEL_FALLBACK_CHAIN = ['nvidia/nemotron-3-super-120b-a12b', 'nvidia/nemotron-3.5-lightning-30b-a3b'];
 const MAX_TOKENS = 16384;
 const TIMEOUT_MS = 480000;
 const MAX_ATTEMPTS = 3;
@@ -202,6 +202,7 @@ async function analyzePapers(apiKey, papersData) {
         const result = robustJsonParse(text);
         if (result) {
           console.error(`[INFO] ${model} success: ${result.top_picks?.length || 0} top picks, ${result.all_papers?.length || 0} total`);
+          result.model_used = model;
           return result;
         }
         console.error(`[WARN] JSON parse failed on attempt ${attempt}/${MAX_ATTEMPTS}, retrying...`);
@@ -246,7 +247,7 @@ function generateHtml(analysis) {
   const keywords = analysis.keywords || [];
   const topicDist = analysis.topic_distribution || {};
   const totalCount = topPicks.length + allPapers.length;
-  const usedModel = MODEL_FALLBACK_CHAIN[0];
+  const usedModel = analysis.model_used || '未使用 AI（無新文獻）';
 
   let topPicksHtml = '';
   for (const pick of topPicks) {
