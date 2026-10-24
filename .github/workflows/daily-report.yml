@@ -21,6 +21,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
+          ref: master
           fetch-depth: 0
 
       - name: Setup Node.js 24
@@ -78,11 +79,29 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/
-          git diff --cached --quiet && echo "No changes to commit" && exit 0
-          git commit -m "📄 SE research daily report: ${{ steps.date.outputs.target }}"
-          git pull --rebase origin master
-          git push
+          REPORT="docs/se-${{ steps.date.outputs.target }}.html"
+          test -f "$REPORT"
+          git fetch origin master
+          PUBLISH_DIR=$(mktemp -d)
+          trap 'git worktree remove --force "$PUBLISH_DIR" >/dev/null 2>&1 || true' EXIT
+          git worktree add --detach "$PUBLISH_DIR" origin/master
+          cp -- "$REPORT" "$PUBLISH_DIR/$REPORT"
+          SIDECAR="${REPORT%.html}.json"
+          if [ -f "$SIDECAR" ]; then
+            cp -- "$SIDECAR" "$PUBLISH_DIR/$SIDECAR"
+          fi
+          (
+            cd "$PUBLISH_DIR"
+            node scripts/generate_index.mjs
+            git add -- "$REPORT" docs/index.html
+            if [ -f "$SIDECAR" ]; then git add -- "$SIDECAR"; fi
+            if git diff --cached --quiet; then
+              echo "No report changes to commit"
+              exit 0
+            fi
+            git commit -m "Update se daily report: ${{ steps.date.outputs.target }}"
+            git push origin HEAD:refs/heads/master
+          )
 
       - name: Summary
         run: |
