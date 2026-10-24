@@ -1,6 +1,9 @@
 name: SE Research Daily Report
 
 on:
+  push:
+    branches: ["master"]
+    paths: [".github/workflows/daily-report.yml"]
   schedule:
     - cron: "45 5 * * *" # UTC 05:45 = GMT+8 13:45
   workflow_dispatch:

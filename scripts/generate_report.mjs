@@ -1,4 +1,4 @@
-import { writeFileSync, readFileSync, mkdirSync } from 'node:fs';
+import { writeFileSync, readFileSync, mkdirSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 
 const API_BASE = (process.env.NVIDIA_API_BASE || 'https://integrate.api.nvidia.com/v1').replace(/\/+$/, '');
@@ -457,6 +457,10 @@ async function main() {
   }
 
   const papersData = loadPapers(opts.input);
+  if (!papersData?.papers?.length && existsSync(opts.output)) {
+    console.error("[INFO] No new papers; preserving existing report");
+    return;
+  }
   let analysis;
 
   if (!papersData?.papers?.length) {
