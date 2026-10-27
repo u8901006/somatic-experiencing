@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Somatic Experiencing Research &middot; 身體經驗創傷治療研究日報 &middot; 2026年10月27日</title>
+<meta name="description" content="2026年10月27日 身體經驗創傷治療研究日報，由 AI 自動彙整 PubMed 最新論文"/>
+<style>
+  :root { --bg: #f6f1e8; --surface: #fffaf2; --line: #d8c5ab; --text: #2b2118; --muted: #766453; --accent: #8c4f2b; --accent-soft: #ead2bf; --card-bg: color-mix(in srgb, var(--surface) 92%, white); }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: radial-gradient(circle at top, #fff6ea 0, var(--bg) 55%, #ead8c6 100%); color: var(--text); font-family: "Noto Sans TC", "PingFang TC", "Helvetica Neue", Arial, sans-serif; min-height: 100vh; overflow-x: hidden; }
+  .container { position: relative; z-index: 1; max-width: 880px; margin: 0 auto; padding: 60px 32px 80px; }
+  header { display: flex; align-items: center; gap: 16px; margin-bottom: 52px; animation: fadeDown 0.6s ease both; }
+  .logo { width: 48px; height: 48px; border-radius: 14px; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; box-shadow: 0 4px 20px rgba(140,79,43,0.25); }
+  .header-text h1 { font-size: 20px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
+  .header-meta { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; align-items: center; }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; letter-spacing: 0.3px; }
+  .badge-date { background: var(--accent-soft); border: 1px solid var(--line); color: var(--accent); }
+  .badge-count { background: rgba(140,79,43,0.06); border: 1px solid var(--line); color: var(--muted); }
+  .badge-source { background: transparent; color: var(--muted); font-size: 11px; padding: 0 4px; }
+  .summary-card { background: var(--card-bg); border: 1px solid var(--line); border-radius: 24px; padding: 28px 32px; margin-bottom: 32px; box-shadow: 0 20px 60px rgba(61,36,15,0.06); animation: fadeUp 0.5s ease 0.1s both; }
+  .summary-card h2 { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.6px; color: var(--accent); margin-bottom: 16px; }
+  .summary-text { font-size: 15px; line-height: 1.8; color: var(--text); }
+  .section { margin-bottom: 36px; animation: fadeUp 0.5s ease both; }
+  .section-title { display: flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+  .section-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; background: var(--accent-soft); }
+  .news-card { background: var(--card-bg); border: 1px solid var(--line); border-radius: 24px; padding: 22px 26px; margin-bottom: 12px; box-shadow: 0 8px 30px rgba(61,36,15,0.04); transition: background 0.2s, border-color 0.2s, transform 0.2s; }
+  .news-card:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(61,36,15,0.08); }
+  .news-card.featured { border-left: 3px solid var(--accent); }
+  .card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .rank-badge { background: var(--accent); color: #fff7f0; font-weight: 700; font-size: 12px; padding: 2px 8px; border-radius: 6px; }
+  .emoji-icon { font-size: 18px; }
+  .card-header-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .emoji-sm { font-size: 14px; }
+  .news-card h3 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 8px; line-height: 1.5; }
+  .journal-source { font-size: 12px; color: var(--accent); margin-bottom: 8px; opacity: 0.8; }
+  .news-card p { font-size: 13.5px; line-height: 1.75; color: var(--muted); }
+  .card-footer { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .tag { padding: 2px 9px; background: var(--accent-soft); border-radius: 999px; font-size: 11px; color: var(--accent); }
+  .news-card a { font-size: 12px; color: var(--accent); text-decoration: none; opacity: 0.7; margin-left: auto; }
+  .news-card a:hover { opacity: 1; }
+  .utility-high { color: #5a7a3a; font-size: 11px; font-weight: 600; padding: 2px 8px; background: rgba(90,122,58,0.1); border-radius: 4px; }
+  .utility-mid { color: #9f7a2e; font-size: 11px; font-weight: 600; padding: 2px 8px; background: rgba(159,122,46,0.1); border-radius: 4px; }
+  .utility-low { color: var(--muted); font-size: 11px; font-weight: 600; padding: 2px 8px; background: rgba(118,100,83,0.08); border-radius: 4px; }
+  .utility-sm { font-size: 10px; }
+  .pico-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; padding: 12px; background: rgba(255,253,249,0.8); border-radius: 14px; border: 1px solid var(--line); }
+  .pico-item { display: flex; gap: 8px; align-items: baseline; }
+  .pico-label { font-size: 10px; font-weight: 700; color: #fff7f0; background: var(--accent); padding: 2px 6px; border-radius: 4px; flex-shrink: 0; }
+  .pico-text { font-size: 12px; color: var(--muted); line-height: 1.4; }
+  .keywords-section { margin-bottom: 36px; }
+  .keywords { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .keyword { padding: 5px 14px; background: var(--accent-soft); border: 1px solid var(--line); border-radius: 20px; font-size: 12px; color: var(--accent); cursor: default; transition: background 0.2s; }
+  .keyword:hover { background: rgba(140,79,43,0.18); }
+  .topic-section { margin-bottom: 36px; }
+  .topic-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .topic-name { font-size: 13px; color: var(--muted); width: 120px; flex-shrink: 0; text-align: right; }
+  .topic-bar-bg { flex: 1; height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; }
+  .topic-bar { height: 100%; background: linear-gradient(90deg, var(--accent), #c47a4a); border-radius: 4px; transition: width 0.6s ease; }
+  .topic-count { font-size: 12px; color: var(--accent); width: 24px; }
+  .links-banner { margin-top: 48px; display: flex; flex-direction: column; gap: 10px; animation: fadeUp 0.5s ease 0.4s both; }
+  .link-card { display: flex; align-items: center; gap: 14px; padding: 16px 22px; background: var(--card-bg); border: 1px solid var(--line); border-radius: 20px; text-decoration: none; color: var(--text); transition: all 0.2s; box-shadow: 0 8px 30px rgba(61,36,15,0.04); }
+  .link-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 12px 40px rgba(61,36,15,0.08); }
+  .link-icon { font-size: 26px; flex-shrink: 0; }
+  .link-text { flex: 1; }
+  .link-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .link-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .link-arrow { font-size: 16px; color: var(--accent); font-weight: 700; }
+  footer { margin-top: 32px; padding-top: 22px; border-top: 1px solid var(--line); font-size: 11.5px; color: var(--muted); display: flex; justify-content: space-between; animation: fadeUp 0.5s ease 0.5s both; }
+  footer a { color: var(--muted); text-decoration: none; }
+  footer a:hover { color: var(--accent); }
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  @media (max-width: 600px) { .container { padding: 36px 18px 60px; } .summary-card, .news-card { padding: 20px 18px; } .pico-grid { grid-template-columns: 1fr; } footer { flex-direction: column; gap: 6px; text-align: center; } .topic-name { width: 80px; font-size: 11px; } .links-banner { gap: 8px; } }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="logo">🌿</div>
+    <div class="header-text">
+      <h1>Somatic Experiencing Research &middot; 身體經驗創傷治療研究日報</h1>
+      <div class="header-meta">
+        <span class="badge badge-date">📅 2026年10月27日</span>
+        <span class="badge badge-count">📊 9 篇文獻</span>
+        <span class="badge badge-source">Powered by PubMed + NVIDIA Nemotron</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="summary-card"><h2>📋 今日文獻趨勢</h2><p class="summary-text">今日文獻聚焦於創傷後身體反應與調節，涵蓋兒童創傷介入、身體覺察增強及群體創傷研究方法。特別是 Somatic Experiencing（身體經驗創傷治療）在提升心理安全感與改善身體邊界方面顯示出臨床意義，同時舞蹈介入證實了在纖維肌痛身體意識改善上的效益，但未能觸及恐惧回避。Nova Protocol 的大型縱橫研究則提供了探索創傷處理新視角的框架。</p></div>
+
+  <div class="section"><div class="section-title"><span class="section-icon">⭐</span>今日精選 TOP Picks</div>
+    <div class="news-card featured">
+      <div class="card-header">
+        <span class="rank-badge">#1</span>
+        <span class="emoji-icon">🧠</span>
+        <span class="utility-high">高實用性</span>
+      </div>
+      <h3>從 Somatic Experiencing 到覺察安全感：評估身體導向介入對不同程度童年虐待成年人的影響</h3>
+      <p class="journal-source">European journal of psychotraumatology &middot; From Somatic Experiencing to felt safety: assessing the effects of a body-oriented intervention in adults with various degrees of child maltreatment.</p>
+      <p>簡短的身體經驗創傷治療介入顯著提升了童年虐待成年人的心理安全感，並改善身體邊界與社交連結，透過心率與心率變異度的變化展示了自律神經調節機制，提供了身體創傷治療的實證支撐。</p>
+      
+      <div class="pico-grid">
+        <div class="pico-item"><span class="pico-label">P</span><span class="pico-text">有不同程度童年虐待歷史的成年人</span></div>
+        <div class="pico-item"><span class="pico-label">I</span><span class="pico-text">60分鐘身體經驗創傷治療導向身體介入</span></div>
+        <div class="pico-item"><span class="pico-label">C</span><span class="pico-text">心理教育對照組</span></div>
+        <div class="pico-item"><span class="pico-label">O</span><span class="pico-text">心理安全感提升、身體邊界改善、社交連結增強、心率變異度增加</span></div>
+      </div>
+      <div class="card-footer">
+        <span class="tag">創傷治療</span><span class="tag">身體經驗創傷治療</span><span class="tag">身體覺察</span><span class="tag">兒童創傷</span><span class="tag">HRV</span>
+        <a href="https://pubmed.ncbi.nlm.nih.gov/[object Object]/" target="_blank" rel="noopener">閱讀原文 →</a>
+      </div>
+    </div>
+    <div class="news-card featured">
+      <div class="card-header">
+        <span class="rank-badge">#2</span>
+        <span class="emoji-icon">📊</span>
+        <span class="utility-mid">中實用性</span>
+      </div>
+      <h3>Nova Protocol：民用大規模創傷事件生存者的全面多模態縱向研究</h3>
+      <p class="journal-source">European journal of psychotraumatology &middot; The Nova Protocol: a comprehensive multimodal longitudinal study among civilian survivors of a mass trauma event.</p>
+      <p>這項研究針對2023年以色列Nova音樂祭恐襲生存者建立了長達24個月的多模態縱向研究框架，整合了臨床評估、可穿著感測器、MRI、內感受評估及生物標記，為理解大規模創傷後心理生理軌跡提供了豐富資料。</p>
+      
+      <div class="pico-grid">
+        <div class="pico-item"><span class="pico-label">P</span><span class="pico-text">7 October 2023年Nova音樂祭攻擊的民間生存者</span></div>
+        <div class="pico-item"><span class="pico-label">I</span><span class="pico-text">觀察性研究協議（無特定介入）</span></div>
+        <div class="pico-item"><span class="pico-label">C</span><span class="pico-text">社會文化比較群體</span></div>
+        <div class="pico-item"><span class="pico-label">O</span><span class="pico-text">PTSD症狀嚴重度、心理困擾軌跡、生物神經標誌變化</span></div>
+      </div>
+      <div class="card-footer">
+        <span class="tag">創傷治療</span><span class="tag">PTSD</span><span class="tag">大規模創傷</span><span class="tag">縱向研究</span><span class="tag">可穿著感測器</span>
+        <a href="https://pubmed.ncbi.nlm.nih.gov/[object Object]/" target="_blank" rel="noopener">閱讀原文 →</a>
+      </div>
+    </div>
+    <div class="news-card featured">
+      <div class="card-header">
+        <span class="rank-badge">#3</span>
+        <span class="emoji-icon">💃</span>
+        <span class="utility-mid">中實用性</span>
+      </div>
+      <h3>婦女纖維肌痛身體意識改善之舞蹈運動介入研究</h3>
+      <p class="journal-source">Journal of dance medicine & science : official publication of the International Association for Dance Medicine & Science &middot; A Physiotherapy-Based Dance Exercise Intervention Can Improve Body Awareness and Reduce Pain Perception But Does Not Affect Kinesiophobia in Women with Fibromyalgia.</p>
+      <p>4週的物理治療舞蹈運動介入顯著改善了纖維肌痛婦女的身體意識與降低了痛覺（減幅40%-60%），然而對於運動恐懼（kinesiophobia）無顯著影響，提示身體訓練在疼痛管理上有局限性但身體覺察效益明確。</p>
+      
+      <div class="pico-grid">
+        <div class="pico-item"><span class="pico-label">P</span><span class="pico-text">20-40歲患有纖維肌痛的女性</span></div>
+        <div class="pico-item"><span class="pico-label">I</span><span class="pico-text">4週物理治療舞蹈運動介入（60分鐘/次）</span></div>
+        <div class="pico-item"><span class="pico-label">C</span><span class="pico-text">介前評估（隨自身作為對照）</span></div>
+        <div class="pico-item"><span class="pico-label">O</span><span class="pico-text">身體意識（MAIA）改善、痛覺降低、運動恐懼無顯著變化</span></div>
+      </div>
+      <div class="card-footer">
+        <span class="tag">慢性疼痛</span><span class="tag">身體覺察</span><span class="tag">身體心理治療</span><span class="tag">復健物理治療</span><span class="tag">舞蹈</span>
+        <a href="https://pubmed.ncbi.nlm.nih.gov/[object Object]/" target="_blank" rel="noopener">閱讀原文 →</a>
+      </div>
+    </div>
+    <div class="news-card featured">
+      <div class="card-header">
+        <span class="rank-badge">#4</span>
+        <span class="emoji-icon">🧬</span>
+        <span class="utility-mid">中實用性</span>
+      </div>
+      <h3>複雜創傷後應力症候群的神經認知帳戶：自我模式、情緒調節與MDMA輔助治療啟示</h3>
+      <p class="journal-source">European journal of psychotraumatology &middot; A neurocognitive account of complex PTSD: self-modelling, affective dysregulation, and implications for MDMA-assisted and targeted psychotherapies.</p>
+      <p>本文透過預測處理與自我模式框架，闡複雜創傷後應力症候群在自我組織與情緒調節上的神經認知機制，並探討MDMA輔助治療如何透過調節額葉與顴下區活動來影響自我參考認知與人際信任。</p>
+      
+      <div class="pico-grid">
+        <div class="pico-item"><span class="pico-label">P</span><span class="pico-text">複雜創傷後應力症候群患者</span></div>
+        <div class="pico-item"><span class="pico-label">I</span><span class="pico-text">概念模型與MDMA輔助心理治療理論</span></div>
+        <div class="pico-item"><span class="pico-label">C</span><span class="pico-text">傳統PTSD治療模式</span></div>
+        <div class="pico-item"><span class="pico-label">O</span><span class="pico-text">提出自我模式失調與情緒不穩定的神經機制，並為MDMA治療提供理論支撐</span></div>
+      </div>
+      <div class="card-footer">
+        <span class="tag">創傷治療</span><span class="tag">複雜PTSD</span><span class="tag">MDMA輔助 psychotherapy</span><span class="tag">自我模式</span><span class="tag">神經認知</span>
+        <a href="https://pubmed.ncbi.nlm.nih.gov/[object Object]/" target="_blank" rel="noopener">閱讀原文 →</a>
+      </div>
+    </div>
+    <div class="news-card featured">
+      <div class="card-header">
+        <span class="rank-badge">#5</span>
+        <span class="emoji-icon">📈</span>
+        <span class="utility-low">低實用性</span>
+      </div>
+      <h3>過去十年軍用創傷後應力症候群介入與治療文獻的視覺分析</h3>
+      <p class="journal-source">European journal of psychotraumatology &middot; Visual analysis of interventions and treatments for post-traumatic stress disorder in the military population over the past decade: a study based on the PubMed database.</p>
+      <p>透過文獻計量學分析揭示了過去十年軍用PTSD治療研究的熱門主題與趨勢，主要包括長時間暴露治療、認知重構治療、認知行為治療及虛擬實境，同時新興主題如心率變異度與併發診斷受到關注。</p>
+      
+      <div class="pico-grid">
+        <div class="pico-item"><span class="pico-label">P</span><span class="pico-text">軍事人員與退伍軍人</span></div>
+        <div class="pico-item"><span class="pico-label">I</span><span class="pico-text">文獻計量學分析（非臨床介入）</span></div>
+        <div class="pico-item"><span class="pico-label">C</span><span class="pico-text">時間跨度比較（2014-2024）</span></div>
+        <div class="pico-item"><span class="pico-label">O</span><span class="pico-text">研究熱點譜系、合作網絡與新興主題識別</span></div>
+      </div>
+      <div class="card-footer">
+        <span class="tag">文獻計量學</span><span class="tag">軍用PTSD</span><span class="tag">研究趨勢</span><span class="tag">合作網絡</span>
+        <a href="https://pubmed.ncbi.nlm.nih.gov/[object Object]/" target="_blank" rel="noopener">閱讀原文 →</a>
+      </div>
+    </div></div>
+
+  <div class="section"><div class="section-title"><span class="section-icon">📚</span>其他值得關注的文獻</div>
+    <div class="news-card">
+      <div class="card-header-row">
+        <span class="emoji-sm">💃</span>
+        <span class="utility-mid utility-sm">中</span>
+      </div>
+      <h3>A physiotherapy-based dance exercise intervention can improve body awareness and reduce pain perception but does not affect kinesiophobia in women with fibromyalgia.</h3>
+      <p class="journal-source">Journal of dance medicine & science : official publication of the International Association for Dance Medicine & Science</p>
+      <p>纖維肌痛婦女接受4週舞蹈運動介入後，身體意識與痛覺顯著改善，但運動恐懼量無顯著變化，提示運動介入在疼痛管理上的輔助作用有限。</p>
+      <div class="card-footer">
+        <span class="tag">慢性疼痛</span><span class="tag">身體覺察</span><span class="tag">身體心理治療</span><span class="tag">復健物理治療</span>
+        <a href="https://pubmed.ncbi.nlm.nih.gov/[object Object]/" target="_blank" rel="noopener">PubMed →</a>
+      </div>
+    </div>
+    <div class="news-card">
+      <div class="card-header-row">
+        <span class="emoji-sm">📊</span>
+        <span class="utility-mid utility-sm">中</span>
+      </div>
+      <h3>The Nova Protocol: a comprehensive multimodal longitudinal study among civilian survivors of a mass trauma event.</h3>
+      <p class="journal-source">European journal of psychotraumatology</p>
+      <p>大規模創傷事件（2023年以色列Nova攻擊）生存者的長期縱向研究協議，整合臨床、生理、腦部與生物標記數據，為創傷後應力症候群之長程軌跡研究提供樣本框架。</p>
+      <div class="card-footer">
+        <span class="tag">創傷治療</span><span class="tag">PTSD</span><span class="tag">大規模創傷</span><span class="tag">縱向研究</span><span class="tag">可穿著感測器</span>
+        <a href="https://pubmed.ncbi.nlm.nih.gov/[object Object]/" target="_blank" rel="noopener">PubMed →</a>
+      </div>
+    </div>
+    <div class="news-card">
+      <div class="card-header-row">
+        <span class="emoji-sm">🧬</span>
+        <span class="utility-mid utility-sm">中</span>
+      </div>
+      <h3>A neurocognitive account of complex PTSD: self-modelling, affective dysregulation, and implications for MDMA-assisted and targeted psychotherapies.</h3>
+      <p class="journal-source">European journal of psychotraumatology</p>
+      <p>敘事性述評發展了複雜創傷後應力症候群的神經認知模型，強調自我模式缺陷與情緒調節失調的神經基礎，並探討MDMA輔助治療在調節自我參考認知上的潛力。</p>
+      <div class="card-footer">
+        <span class="tag">創傷治療</span><span class="tag">複雜PTSD</span><span class="tag">MDMA輔助 psychotherapy</span><span class="tag">自我模式</span><span class="tag">神經認知</span>
+        <a href="https://pubmed.ncbi.nlm.nih.gov/[object Object]/" target="_blank" rel="noopener">PubMed →</a>
+      </div>
+    </div>
+    <div class="news-card">
+      <div class="card-header-row">
+        <span class="emoji-sm">📈</span>
+        <span class="utility-low utility-sm">低</span>
+      </div>
+      <h3>Visual analysis of interventions and treatments for post-traumatic stress disorder in the military population over the past decade: a study based on the PubMed database.</h3>
+      <p class="journal-source">European journal of psychotraumatology</p>
+      <p>文獻計量學分析顯示軍用PTSD研究產出成長持續，主要治療主流為長時間暴露、認知重構及認知行為治療，新興主題包括心率變異度與併發診斷管理。</p>
+      <div class="card-footer">
+        <span class="tag">文獻計量學</span><span class="tag">軍用PTSD</span><span class="tag">研究趨勢</span><span class="tag">合作網絡</span>
+        <a href="https://pubmed.ncbi.nlm.nih.gov/[object Object]/" target="_blank" rel="noopener">PubMed →</a>
+      </div>
+    </div></div>
+
+  <div class="topic-section section"><div class="section-title"><span class="section-icon">📊</span>主題分佈</div>
+      <div class="topic-row">
+        <span class="topic-name">創傷治療</span>
+        <div class="topic-bar-bg"><div class="topic-bar" style="width:100%"></div></div>
+        <span class="topic-count">5</span>
+      </div>
+      <div class="topic-row">
+        <span class="topic-name">身體覺察</span>
+        <div class="topic-bar-bg"><div class="topic-bar" style="width:60%"></div></div>
+        <span class="topic-count">3</span>
+      </div>
+      <div class="topic-row">
+        <span class="topic-name">自律神經調節</span>
+        <div class="topic-bar-bg"><div class="topic-bar" style="width:40%"></div></div>
+        <span class="topic-count">2</span>
+      </div>
+      <div class="topic-row">
+        <span class="topic-name">慢性疼痛</span>
+        <div class="topic-bar-bg"><div class="topic-bar" style="width:20%"></div></div>
+        <span class="topic-count">1</span>
+      </div>
+      <div class="topic-row">
+        <span class="topic-name">複雜PTSD</span>
+        <div class="topic-bar-bg"><div class="topic-bar" style="width:20%"></div></div>
+        <span class="topic-count">1</span>
+      </div></div>
+
+  <div class="keywords-section section"><div class="section-title"><span class="section-icon">🏷️</span>關鍵字</div><div class="keywords"><span class="keyword">Somatic Experiencing</span><span class="keyword">身體經驗創傷治療</span><span class="keyword">創傷後應力症候群</span><span class="keyword">身體覺察</span><span class="keyword">心率變異度</span><span class="keyword">複雜創傷</span></div></div>
+
+  <div class="links-banner">
+    <a href="https://www.leepsyclinic.com/" class="link-card" target="_blank" rel="noopener">
+      <span class="link-icon">🏥</span>
+      <span class="link-text"><span class="link-name">李政洋身心診所首頁</span><span class="link-desc">專業身心科門診服務</span></span>
+      <span class="link-arrow">→</span>
+    </a>
+    <a href="https://blog.leepsyclinic.com/" class="link-card" target="_blank" rel="noopener">
+      <span class="link-icon">📧</span>
+      <span class="link-text"><span class="link-name">訂閱電子報</span><span class="link-desc">最新身心醫學資訊定期送達</span></span>
+      <span class="link-arrow">→</span>
+    </a>
+    <a href="https://buymeacoffee.com/CYlee" class="link-card" target="_blank" rel="noopener">
+      <span class="link-icon">☕</span>
+      <span class="link-text"><span class="link-name">Buy Me a Coffee</span><span class="link-desc">支持本研究日報持續營運</span></span>
+      <span class="link-arrow">→</span>
+    </a>
+  </div>
+
+  <footer>
+    <span>資料來源：PubMed &middot; 分析模型：nvidia/nemotron-3.5-lightning-30b-a3b</span>
+    <span><a href="https://github.com/u8901006/somatic-experiencing">GitHub</a></span>
+  </footer>
+</div>
+</body>
+</html>
